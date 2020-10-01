@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.IO;
 
 namespace ToDo
@@ -23,11 +22,11 @@ namespace ToDo
             if (userOption == 1)
             {
                 Console.WriteLine("Creating new list...");
-                OpenFileDialog ofd = new OpenFileDialog();
                 //make new list
             }
             if (userOption == 2)
             {
+                Console.WriteLine("Opening list...");
                 //open list
             }
 
