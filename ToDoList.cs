@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace ToDo
 {
@@ -17,11 +16,6 @@ namespace ToDo
                 Console.WriteLine((options.IndexOf(option) + 1) + ". " + option);
             }
             
-        }
-
-        public void AddToList(string thing)
-        {
-            todolist.Add(thing);
         }
 
         public void Add()
