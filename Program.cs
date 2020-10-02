@@ -23,26 +23,33 @@ namespace ToDo
             {
                 Console.WriteLine("What would you like to do? (Input number) \n");
                 list.PrintOptions();
-                Console.WriteLine("0. Quit");
+                Console.WriteLine("0. Save and quit");
                 try
                 {
                     userOption = Convert.ToInt32(Console.ReadLine());
+                    if (userOption == 0)
+                    {
+                        Console.WriteLine("Quitting...");
+                        list.Save();
+                        stopcondition = false;
+                    }
+                    else
+                    {
+                        list.Execute(userOption);
+                    }
                 }
-                catch (FormatException exception)
+                catch (FormatException)
                 {
-                    Console.WriteLine("Error! (" + exception.Message + ")");
+                    Console.WriteLine("Error! Not a number.");
+                    Console.ReadLine();
+                    Console.Clear();
                 }
-                if (userOption == 0)
+                catch (OverflowException)
                 {
-                    Console.WriteLine("Quitting...");
-                    list.Save();
-                    stopcondition = false;
+                    Console.WriteLine("Error! Number too big.");
+                    Console.ReadLine();
+                    Console.Clear();
                 }
-                else
-                {
-                    list.Execute(userOption);
-                }
-                Console.WriteLine();
             }
         }
     }

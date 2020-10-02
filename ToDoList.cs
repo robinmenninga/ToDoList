@@ -20,15 +20,33 @@ namespace ToDo
 
         public void Add()
         {
+            Console.Clear();
+            Console.WriteLine("INFO: The input must have a max size of 50 characters");
             Console.Write("Please type out the thing you would like to add: ");
-            //Add max string size
             string thingtodo = Console.ReadLine();
+            if (thingtodo.Length > 50)
+            {
+                Console.WriteLine("Error! Input is longer than 50 characters.");
+                Console.ReadLine();
+                Console.Clear();
+                return;
+            }
             todolist.Add(thingtodo);
             Console.WriteLine("Thing has been added!");
+            Console.ReadLine();
+            Console.Clear();
         }
 
         public void Remove()
         {
+            Console.Clear();
+            if (todolist.Count == 0)
+            {
+                Console.WriteLine("There is nothing to remove!");
+                Console.ReadLine();
+                Console.Clear();
+                return;
+            }
             int ID = 0;
             Console.WriteLine("INFO: If you do not know the ID of the thing, please cancel the command by typing '0'");
             Console.Write("Please provide the ID of the thing you would like to remove: ");
@@ -36,33 +54,58 @@ namespace ToDo
             {
                 ID = Convert.ToInt32(Console.ReadLine());
             }
-            catch (FormatException exception)
+            catch (FormatException)
             {
-                Console.WriteLine("Error! (" + exception.Message + ")");
+                Console.WriteLine("Error! Not a number.");
+                Console.ReadLine();
+                Console.Clear();
+                return;
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine("Error! Number too big.");
+                Console.ReadLine();
+                Console.Clear();
                 return;
             }
 
             if (ID == 0)
             {
                 Console.WriteLine("Cancelled.");
+                Console.ReadLine();
+                Console.Clear();
                 return;
             }
-            todolist.RemoveAt(ID - 1);
-            Console.WriteLine("Thing has been removed.");
+            try
+            {
+                todolist.RemoveAt(ID - 1);
+                Console.WriteLine("Thing has been removed.");
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                Console.WriteLine("Error! ID doesn't exist");
+            }
+            Console.ReadLine();
+            Console.Clear();
         }
 
         public void Show()
         {
-            Console.WriteLine("Here's a list of things you gotta do: \n");
+            Console.Clear();
             if (todolist.Count == 0)
             {
                 Console.WriteLine("There is nothing on this list.");
+                Console.ReadLine();
+                Console.Clear();
                 return;
             }
+            Console.WriteLine("Here's a list of things you got to do: \n");
             foreach (string thingtodo in todolist)
             {
                 Console.WriteLine((todolist.IndexOf(thingtodo) + 1) + ". " + thingtodo);
             }
+            Console.ReadLine();
+            Console.Clear();
         }
         public void Save()
         {
@@ -83,6 +126,11 @@ namespace ToDo
         {
             switch (optionID)
             {
+                default:
+                    Console.WriteLine("Error! Unknown option.");
+                    Console.ReadLine();
+                    Console.Clear();
+                    break;
                 case 1:
                     Add();
                     break;
