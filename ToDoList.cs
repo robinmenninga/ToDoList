@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace ToDo
@@ -16,6 +17,11 @@ namespace ToDo
                 Console.WriteLine((options.IndexOf(option) + 1) + ". " + option);
             }
             
+        }
+
+        public void AddToList(string thing)
+        {
+            todolist.Add(thing);
         }
 
         public void Add()
@@ -54,11 +60,31 @@ namespace ToDo
         public void Show()
         {
             Console.WriteLine("Here's a list of things you gotta do: \n");
+            if (todolist.Count == 0)
+            {
+                Console.WriteLine("There is nothing on this list.");
+                return;
+            }
             foreach (string thingtodo in todolist)
             {
                 Console.WriteLine((todolist.IndexOf(thingtodo) + 1) + ". " + thingtodo);
             }
         }
+        public void Save()
+        {
+            foreach (string thing in todolist)
+            {
+                File.WriteAllLines("todolist.txt", todolist);
+            }
+        }
+        public void Open()
+        {
+            foreach (string fileline in File.ReadAllLines("todolist.txt"))
+            {
+                todolist.Add(fileline);
+            }
+        }
+
         public void Execute(int optionID)
         {
             switch (optionID)

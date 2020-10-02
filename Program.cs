@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 
 namespace ToDo
 {
@@ -8,37 +9,23 @@ namespace ToDo
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Starting program...");
+            bool stopcondition = true;
             int userOption = 0;
-            Console.WriteLine("Do you want to create a new list (1) or do you want to open an existing list (2)? (Insert number)");
-            try
+            if (!File.Exists("todolist.txt"))
             {
-                userOption = Convert.ToInt32(Console.ReadLine());
-
+                Console.WriteLine("No list found, creating a new list");
+                File.Create("todolist.txt").Dispose();
             }
-            catch (FormatException exception)
-            {
-                Console.WriteLine("Error! (" + exception.Message + ")");
-            }
-            if (userOption == 1)
-            {
-                Console.WriteLine("Creating new list...");
-                //make new list
-            }
-            if (userOption == 2)
-            {
-                Console.WriteLine("Opening list...");
-                //open list
-            }
-
-
-            Console.WriteLine("Starting up list...");
-            
+            Console.WriteLine("Opening list...");
             ToDoList list = new ToDoList();
+            list.Open();
             Console.Write("Welcome user! ");
-            while (true)
+            while (stopcondition)
             {
                 Console.WriteLine("What would you like to do? (Input number) \n");
                 list.PrintOptions();
+                Console.WriteLine("0. Quit");
                 try
                 {
                     userOption = Convert.ToInt32(Console.ReadLine());
@@ -47,7 +34,16 @@ namespace ToDo
                 {
                     Console.WriteLine("Error! (" + exception.Message + ")");
                 }
-                list.Execute(userOption);
+                if (userOption == 0)
+                {
+                    Console.WriteLine("Quitting...");
+                    list.Save();
+                    stopcondition = false;
+                }
+                else
+                {
+                    list.Execute(userOption);
+                }
                 Console.WriteLine();
             }
         }
