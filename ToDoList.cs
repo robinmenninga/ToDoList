@@ -122,7 +122,7 @@ namespace ToDo
                 } catch (FormatException)
                 {
                     Console.WriteLine("Error! File corrupted.");
-                    string newFileName = CreateCorruptedFile();
+                    string newFileName = CreateCorruptedFileName();
                     File.Move("todolist.txt", newFileName);
                     Console.WriteLine("The corrupted file has been renamed to " + newFileName + ".");
                     Console.WriteLine("Creating new list...");
@@ -133,13 +133,13 @@ namespace ToDo
             }
         }
 
-        private string CreateCorruptedFile()
+        private string CreateCorruptedFileName()
         {
             string GUID = Guid.NewGuid().ToString();
             string newFileName = "CORRUPTED_todolist_" + GUID + ".txt";
             if (File.Exists(newFileName))
             {
-                CreateCorruptedFile();
+                return CreateCorruptedFileName();
             }
             return newFileName;
         }
