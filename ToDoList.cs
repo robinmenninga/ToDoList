@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace ToDo
 {
     class ToDoList
     {
         List<string> options = new List<string> {"Add to list", "Remove from list", "Show items on list" };
-        List<string> todolist = new List<string>();
+        Dictionary<int, string> todolist = new Dictionary<int, string>();
 
         public void PrintOptions()
         {
@@ -27,14 +28,21 @@ namespace ToDo
             if (thingtodo.Length > 50)
             {
                 Console.WriteLine("Error! Input is longer than 50 characters.");
-                Console.ReadLine();
-                Console.Clear();
                 return;
             }
-            todolist.Add(thingtodo);
+            //create new ID
+            int ID = GenerateID(1);
+            todolist.Add(ID, thingtodo);
             Console.WriteLine("Thing has been added!");
-            Console.ReadLine();
-            Console.Clear();
+        }
+
+        public int GenerateID(int ID)
+        {
+            if (todolist.Keys.Contains(ID))
+            {
+                return GenerateID(ID + 1);
+            }
+            return ID;
         }
 
         public void Remove()
@@ -43,8 +51,6 @@ namespace ToDo
             if (todolist.Count == 0)
             {
                 Console.WriteLine("There is nothing to remove!");
-                Console.ReadLine();
-                Console.Clear();
                 return;
             }
             int ID = 0;
@@ -57,36 +63,27 @@ namespace ToDo
             catch (FormatException)
             {
                 Console.WriteLine("Error! Not a number.");
-                Console.ReadLine();
-                Console.Clear();
                 return;
             }
             catch (OverflowException)
             {
                 Console.WriteLine("Error! Number too big.");
-                Console.ReadLine();
-                Console.Clear();
                 return;
             }
 
             if (ID == 0)
             {
                 Console.WriteLine("Cancelled.");
-                Console.ReadLine();
-                Console.Clear();
                 return;
             }
-            try
+            if (!todolist.Keys.Contains(ID))
             {
-                todolist.RemoveAt(ID - 1);
-                Console.WriteLine("Thing has been removed.");
+                Console.WriteLine("Error! ID doesn't exist.");
+                return;
             }
-            catch (ArgumentOutOfRangeException)
-            {
-                Console.WriteLine("Error! ID doesn't exist");
-            }
-            Console.ReadLine();
-            Console.Clear();
+
+            todolist.Remove(ID);
+            Console.WriteLine("Thing has been removed.");
         }
 
         public void Show()
@@ -95,31 +92,56 @@ namespace ToDo
             if (todolist.Count == 0)
             {
                 Console.WriteLine("There is nothing on this list.");
-                Console.ReadLine();
-                Console.Clear();
                 return;
             }
             Console.WriteLine("Here's a list of things you got to do: \n");
-            foreach (string thingtodo in todolist)
+            foreach (KeyValuePair<int, string> thingtodo in todolist)
             {
-                Console.WriteLine((todolist.IndexOf(thingtodo) + 1) + ". " + thingtodo);
+                Console.WriteLine(thingtodo.Key + ".   " + thingtodo.Value);
             }
-            Console.ReadLine();
-            Console.Clear();
         }
         public void Save()
         {
-            foreach (string thing in todolist)
+            List<string> todoStringList = new List<string>();
+            foreach (KeyValuePair<int, string> thing in todolist)
             {
-                File.WriteAllLines("todolist.txt", todolist);
+                string item = thing.Key + " " + thing.Value;
+                todoStringList.Add(item);
             }
+                File.WriteAllLines("todolist.txt", todoStringList);
         }
         public void Open()
         {
             foreach (string fileline in File.ReadAllLines("todolist.txt"))
             {
-                todolist.Add(fileline);
+                int ID = 0;
+                string[] filelineArray = fileline.Split(" ");
+                try
+                {
+                    ID = Convert.ToInt32(filelineArray[0]);
+                } catch (FormatException)
+                {
+                    Console.WriteLine("Error! File corrupted.");
+                    string newFileName = CreateCorruptedFile();
+                    File.Move("todolist.txt", newFileName);
+                    Console.WriteLine("The corrupted file has been renamed to " + newFileName + ".");
+                    Console.WriteLine("Creating new list...");
+                    File.Create("todolist.txt").Dispose();
+                    return;
+                }
+                todolist.Add(ID, string.Join(" ", filelineArray[1..filelineArray.Length]));
             }
+        }
+
+        private string CreateCorruptedFile()
+        {
+            string GUID = Guid.NewGuid().ToString();
+            string newFileName = "CORRUPTED_todolist_" + GUID + ".txt";
+            if (File.Exists(newFileName))
+            {
+                CreateCorruptedFile();
+            }
+            return newFileName;
         }
 
         public void Execute(int optionID)
@@ -128,8 +150,6 @@ namespace ToDo
             {
                 default:
                     Console.WriteLine("Error! Unknown option.");
-                    Console.ReadLine();
-                    Console.Clear();
                     break;
                 case 1:
                     Add();
@@ -141,6 +161,8 @@ namespace ToDo
                     Show();
                     break;
             }
+            Console.ReadLine();
+            Console.Clear();
         }
     }
 }
