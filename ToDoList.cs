@@ -21,7 +21,7 @@ namespace ToDo
 
         public void Add()
         {
-            Console.WriteLine("INFO: The input must have a max size of 50 characters. If you don't want to stop adding, type '0'");
+            Console.WriteLine("INFO: The input must have a max size of 50 characters. If you want to cancel, type '0'");
             Console.Write("Please type out the thing you would like to add: ");
             string thingtodo = Console.ReadLine();
             if (thingtodo.Length > 50)
