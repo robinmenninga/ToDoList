@@ -7,7 +7,7 @@ namespace ToDo
 {
     class ToDoList
     {
-        List<string> options = new List<string> {"Add to list", "Remove from list", "Show items on list" };
+        List<string> options = new List<string> { "Add to list", "Remove from list", "Show items on list" };
         Dictionary<int, string> todolist = new Dictionary<int, string>();
 
         public void PrintOptions()
@@ -21,13 +21,17 @@ namespace ToDo
 
         public void Add()
         {
-            Console.Clear();
-            Console.WriteLine("INFO: The input must have a max size of 50 characters");
+            Console.WriteLine("INFO: The input must have a max size of 50 characters. If you don't want to stop adding, type '0'");
             Console.Write("Please type out the thing you would like to add: ");
             string thingtodo = Console.ReadLine();
             if (thingtodo.Length > 50)
             {
                 Console.WriteLine("Error! Input is longer than 50 characters.");
+                return;
+            }
+            if (thingtodo.Equals("0"))
+            {
+                Console.WriteLine("Cancelled.");
                 return;
             }
             //create new ID
@@ -47,7 +51,6 @@ namespace ToDo
 
         public void Remove()
         {
-            Console.Clear();
             if (todolist.Count == 0)
             {
                 Console.WriteLine("There is nothing to remove!");
@@ -88,7 +91,6 @@ namespace ToDo
 
         public void Show()
         {
-            Console.Clear();
             if (todolist.Count == 0)
             {
                 Console.WriteLine("There is nothing on this list.");
@@ -146,6 +148,7 @@ namespace ToDo
 
         public void Execute(int optionID)
         {
+            Console.Clear();
             switch (optionID)
             {
                 default:
@@ -161,7 +164,7 @@ namespace ToDo
                     Show();
                     break;
             }
-            Console.ReadLine();
+            Console.ReadKey();
             Console.Clear();
         }
     }

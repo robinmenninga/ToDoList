@@ -9,7 +9,7 @@ namespace ToDo
         {
             Console.WriteLine("Starting program...");
             bool stopcondition = true;
-            int userOption = 0;
+            int userOption;
             if (!File.Exists("todolist.txt"))
             {
                 Console.WriteLine("No list found, creating a new list");
@@ -26,7 +26,7 @@ namespace ToDo
                 Console.WriteLine("0. Save and quit");
                 try
                 {
-                    userOption = Convert.ToInt32(Console.ReadLine());
+                    userOption = (int) Char.GetNumericValue(Console.ReadKey().KeyChar);
                     if (userOption == 0)
                     {
                         Console.WriteLine("Quitting...");
